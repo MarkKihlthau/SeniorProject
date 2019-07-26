@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 
 public class CreateAccActivity extends AppCompatActivity {
     private static MobileServiceClient mClient;
+    private static String mssg = "Creation Failed";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,17 +48,25 @@ public class CreateAccActivity extends AppCompatActivity {
         EditText editText3 = (EditText) findViewById(R.id.password2Text);
         password2 = editText3.getText().toString();
 
-        if (password1.equals(password2)) {
+        if (password1.length() < 7)
+        {
+            TextView errMsg = findViewById(R.id.createErr);
+            errMsg.setText("Error! Password must be greater than 7 characters");
+        }
+        else if (password1.length() > 16)
+        {
+            TextView errMsg = findViewById(R.id.createErr);
+            errMsg.setText("Error! Password must be less than 16 characters");
+        }
+        else if (password1.equals(password2)) {
             enterTableVal(username, password1);
             TextView errMsg = findViewById(R.id.createErr);
             errMsg.setText("Account Created!");
         }
-
-        if (!(password1.equals(password2))){
+        else if (!(password1.equals(password2))){
             TextView errMsg = findViewById(R.id.createErr);
             errMsg.setText("Error! Passwords do not match.");
         }
-
     }
 
     public static void enterTableVal(String username, String password){
@@ -77,6 +86,7 @@ public class CreateAccActivity extends AppCompatActivity {
 
                 return null;
             }
+
         };
         runAsyncTask(task);
     }

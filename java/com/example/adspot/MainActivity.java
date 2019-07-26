@@ -27,12 +27,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String testerS = "some text";
-
         //you can now connect to our Azure server and get the client information with 2 lines of code!
         AzureService.initCon(this);
         mClient = AzureService.getClient();
-        Log.d("Hello: ", "test");
 
         //This should store a user. Not a 'real' function. Just for testing
         //enterTableVal();
@@ -45,11 +42,6 @@ public class MainActivity extends AppCompatActivity {
         TextView invalidLogin = findViewById(R.id.invalidLogin);
 
         invalidLogin.setText(""); //make blank
-
-    //    ImageView background = findViewById(R.id.imageView3);
-    //    background.setImageResource(R.drawable.background2);
-
-
     }
 
     public void sendMessage(View view) {
@@ -64,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         EditText editText2 = (EditText) findViewById(R.id.editText2);
         String message2 = editText2.getText().toString();
 
+        LoginAttempt(message, message2);
+
         String master = message + "." + message2;
 
         int search = searchTable(master);
@@ -72,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(EXTRA_MESSAGE, master);
             startActivity(intent);
         }
-        else if (search == 2) { //Consumer
+        else if (!globalReply.equals("0")) { //Consumer
             intent2.putExtra(EXTRA_MESSAGE, master);
             startActivity(intent2);
         }
@@ -84,16 +78,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void createAcc(View view)
     {
-        //TextView invalidLogin = findViewById(R.id.invalidLogin);
-
-        //invalidLogin.setText(globalReply); //make blank
-
-        Intent intent = new Intent(this, ChatBotActivity.class);
+        Intent intent = new Intent(this, CreateAccActivity.class);
         startActivity(intent);
 
-        //Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(
-        //        "https://webchat.botframework.com/embed/my-qna-service2-bot?s=lUEGFT6F1oc.Dh-naOmHujoVnlVCpdxSekbbvgn3hcbSsNK-FZt_vP0"));
-        //startActivity(intent);
+        //TextView invalidLogin = findViewById(R.id.invalidLogin);
+        //invalidLogin.setText(globalReply);
     }
 
     private int searchTable(String user)
@@ -118,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
     public static void enterTableVal()
     {
         final MobileServiceTable<DummyTable> mDummyTable = mClient.getTable(DummyTable.class);
-        final DummyTable item = new DummyTable("Robin", "Chou");
+        final DummyTable item = new DummyTable();
+        item.setUsername("Whataburger");
+        item.setPassword("Yum");
 
         AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>() {
             @Override
@@ -158,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                     while (obj != null){
                         obj = res.get(i);
                         Result = obj.getUsername();
-                        Log.d("TASKREPLY0: ", Result);
+                        //Log.d("TASKREPLY0: ", Result);
                         if (Result.equals("Calvin")) {
                             break;
                         }
@@ -178,6 +169,54 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String Result){
                 getReply(Result);
+            }
+        };
+        runAsyncTask2(task);
+
+    }
+
+    public static void LoginAttempt(final String username, final String password) {
+        final MobileServiceTable<DummyTable> mTable = mClient.getTable(DummyTable.class);
+
+        @SuppressLint("StaticFieldLeak") AsyncTask<Void, Void, String> task = new AsyncTask<Void, Void, String>() {
+            List<DummyTable> res = null;
+            DummyTable obj = new DummyTable();
+
+            @Override
+            protected String doInBackground(Void... params) {
+                String Result1 = "0";
+                String Result2 = "0";
+                try {
+                    res = mTable
+                            .select("username", "password")
+                            .execute()
+                            .get();
+
+                    obj = res.get(0);
+                    int i = 0;
+                    while (obj != null){
+                        obj = res.get(i);
+                        Result1 = obj.getUsername();
+                        Result2 = obj.getPassword();
+                        if (Result1.equals(username) && Result2.equals(password)) {
+                            break;
+                        }
+                        i = i + 1;
+                    }
+
+
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                return Result1;
+            }
+
+            @Override
+            protected void onPostExecute(String Result1){
+                getReply(Result1);
             }
         };
         runAsyncTask2(task);
