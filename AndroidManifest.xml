@@ -3,6 +3,8 @@
     package="com.example.adspot">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -11,11 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ChatBotActivity"></activity>
         <activity
             android:name=".CreateAccActivity"
-            android:parentActivityName=".MainActivity">
-
-        </activity>
+            android:parentActivityName=".MainActivity"></activity>
         <activity
             android:name=".ConsumerHomeActivity"
             android:parentActivityName=".MainActivity">

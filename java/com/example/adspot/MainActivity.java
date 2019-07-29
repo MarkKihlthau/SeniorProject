@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else if (!globalReply.equals("0")) { //Consumer
+            master = globalReply;
             intent2.putExtra(EXTRA_MESSAGE, master);
             startActivity(intent2);
         }
@@ -186,9 +187,10 @@ public class MainActivity extends AppCompatActivity {
             protected String doInBackground(Void... params) {
                 String Result1 = "0";
                 String Result2 = "0";
+                String Result3 = "0";
                 try {
                     res = mTable
-                            .select("username", "password")
+                            .select("username", "password", "id")
                             .execute()
                             .get();
 
@@ -198,7 +200,10 @@ public class MainActivity extends AppCompatActivity {
                         obj = res.get(i);
                         Result1 = obj.getUsername();
                         Result2 = obj.getPassword();
+
                         if (Result1.equals(username) && Result2.equals(password)) {
+                            Result3 = obj.getId();
+                            Result1 = Result1 + ", ID:" + Result3;
                             break;
                         }
                         i = i + 1;

@@ -41,6 +41,11 @@ public class DummyTable {
     public String getVersion() { return mVersion; }
     public final void setVersion(String version) { mVersion = version; }
 
+    @com.google.gson.annotations.SerializedName("CustomerID")
+    private int mCustomerID;
+    public int getCustomerID() { return mCustomerID; }
+    public final void setCustomerID(int customerID) { mCustomerID = customerID; }
+
 
     public DummyTable() {}
 
