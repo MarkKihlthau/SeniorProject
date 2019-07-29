@@ -3,6 +3,7 @@ package com.example.adspot;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,5 +37,11 @@ public class ProviderHomeActivity extends AppCompatActivity {
         TextView textView9 = findViewById(R.id.textView9);
         textView9.setText("Enter Breif Product Description");
 
+    }
+
+    public void openChatbot(View view)
+    {
+        Intent intent = new Intent(this, ChatBotActivity.class);
+        startActivity(intent);
     }
 }

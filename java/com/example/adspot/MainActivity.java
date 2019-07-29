@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public void sendMessage(View view) {
         Intent intent = new Intent(this, ProviderHomeActivity.class);
         Intent intent2 = new Intent(this, ConsumerHomeActivity.class);
+        int search = 0;
 
         //Send Username
         EditText editText = (EditText) findViewById(R.id.editText);
@@ -56,25 +57,27 @@ public class MainActivity extends AppCompatActivity {
         EditText editText2 = (EditText) findViewById(R.id.editText2);
         String message2 = editText2.getText().toString();
 
-        LoginAttempt(message, message2);
 
         String master = message + "." + message2;
-
-        int search = searchTable(master);
+        search = searchTable(master);
 
         if (search == 1) { //Provider
             intent.putExtra(EXTRA_MESSAGE, master);
             startActivity(intent);
         }
-        else if (!globalReply.equals("0")) { //Consumer
+        else if (search == 0) { //Consumer
+            LoginAttempt(message, message2);
             master = globalReply;
-            intent2.putExtra(EXTRA_MESSAGE, master);
-            startActivity(intent2);
+            if (!globalReply.equals("0")) {
+                intent2.putExtra(EXTRA_MESSAGE, master);
+                startActivity(intent2);
+            }
+            else {
+                TextView invalidLogin = findViewById(R.id.invalidLogin);
+                invalidLogin.setText("Invalid Username or Password");
+            }
         }
-        else {
-            TextView invalidLogin = findViewById(R.id.invalidLogin);
-            invalidLogin.setText("Invalid Username or Password");
-        }
+
     }
 
     public void createAcc(View view)
